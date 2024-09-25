@@ -1,0 +1,32 @@
+[
+    {
+        "ground_truth": "Xã Thịnh Sơn H. Đô dương T. Nghệ An",
+        "pred_no_corect": "Xã Thịnh Sơn H., Đo dương T. Nghệ An",
+        "pred_and_correct": "Xã Thịnh Sơn, Đo Lương, T. Nghệ An",
+        "address_info": {
+            "province": "Nghệ An",
+            "district": "Đô Lương",
+            "ward": "Thịnh Sơn"
+        }
+    },
+    {
+        "ground_truth": "X.Hoi Thượng - Đống Hỷ - Thái 2021",
+        "pred_no_corect": "X.Hoi Thượng - Đống Hỷ- Thái 20yêN",
+        "pred_and_correct": "X.Hóa Thượng",
+        "address_info": {
+            "province": "Thái Nguyên",
+            "district": "Đồng Hỷ",
+            "ward": "Hóa Thượng"
+        }
+    },
+    {
+        "ground_truth": "Tổ 73 - Hoàng Cầu - 1 Chợ Xu - Đống Đa - Hà Ni",
+        "pred_no_corect": "Tổ 73 - Hoàng Cầu -TP.1 C Xm Đông Đa - Hà Ni",
+        "pred_and_correct": "Tổ 73-Hoàng Cầu-TP.1 C Xm, Đống Đa, Hà Nội",
+        "address_info": {
+            "province": "Hà Nội",
+            "district": "Đống Đa",
+            "ward": ""
+        }
+    }
+]
