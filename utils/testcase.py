@@ -31,7 +31,7 @@ class TestCase:
 
     def __rand_testcase(self, testcase_num=10):
         df_rand = self.df.copy()
-        df_rand = df_rand.sample(n=testcase_num)
+        df_rand = df_rand.sample(n=testcase_num, replace=True)
         return df_rand
 
     def __rand_vn_char(self):
@@ -323,7 +323,14 @@ class TestCase:
             testcases = json.load(f)
         print(json.dumps(testcases, indent=4, ensure_ascii=False))
 
-    def run_testcase(self, algorithm_name, func, testcase_file_name):
+    def run_testcase(
+        self,
+        algorithm_name,
+        func,
+        testcase_file_name,
+        time_limit=0.2,
+        average_time_limit=0.04,
+    ):
         with open(
             os.path.join(self.path, testcase_file_name), "r", encoding="utf-8"
         ) as f:
@@ -333,6 +340,7 @@ class TestCase:
         point = 0
         logging = LoggingSystemDB()
         for testcase in tqdm(testcases, desc="Processing"):
+        # for testcase in testcases:
             start_time = time.time()
             answer = func(testcase["input_address"])
             end_time = time.time()
@@ -358,11 +366,11 @@ class TestCase:
                 elapsed_time,
                 testcase_file_name,
             )
-            if elapsed_time > 0.01:
+            if elapsed_time > time_limit:
                 point = 0
                 break
         average_elapsed_time = round((total_elapsed_time / total_testcase), 5)
-        if average_elapsed_time > 0.001:
+        if average_elapsed_time > average_time_limit:
             point = 0
         ranking = RankingSystemDB()
         ranking.add_entry(

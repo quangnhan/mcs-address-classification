@@ -60,7 +60,7 @@ class Database:
     def read_text_db(self, db_name):
         file_path = f"datas/database/{db_name}.txt"
         lines_list = []
-        with open(file_path, "r") as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             lines_list = file.readlines()
         lines_list = [line.strip() for line in lines_list]
         return lines_list
