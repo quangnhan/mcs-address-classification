@@ -23,6 +23,8 @@ def run_algorithm_by_name(
                 algorithm_name=algorithm_name,
                 func=func,
                 testcase_file_name=testcase_file_name,
+                time_limit=time_limit,
+                average_time_limit=average_time_limit,
             )
         else:
             print(f"No valid 'run_algorithm' function found in {algorithm_name}.")
