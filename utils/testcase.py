@@ -292,12 +292,8 @@ class TestCase:
         combined_template = []
         for i in range(len(inputs)):
             template = {
-                "input_address": inputs[i][0]
-                + ", "
-                + inputs[i][1]
-                + ", "
-                + inputs[i][2],
-                "output": {
+                "text": inputs[i][0] + ", " + inputs[i][1] + ", " + inputs[i][2],
+                "result": {
                     "ward": corrected[i][0],
                     "district": corrected[i][1],
                     "province": corrected[i][2],
@@ -328,7 +324,7 @@ class TestCase:
         algorithm_name,
         func,
         testcase_file_name,
-        time_limit=0.2,
+        time_limit=0.1,
         average_time_limit=0.04,
     ):
         with open(
@@ -340,9 +336,9 @@ class TestCase:
         point = 0
         logging = LoggingSystemDB()
         for testcase in tqdm(testcases, desc="Processing"):
-        # for testcase in testcases:
+            # for testcase in testcases:
             start_time = time.time()
-            answer = func(testcase["input_address"])
+            answer = func(testcase["text"])
             end_time = time.time()
 
             if not isinstance(answer, dict):
@@ -353,17 +349,18 @@ class TestCase:
             elapsed_time = round(end_time - start_time, 5)
             total_elapsed_time += elapsed_time
             answer_status = "Incorrect"
-            if answer == testcase["output"]:
+            if answer == testcase["result"]:
                 point += 1
                 answer_status = "Correct"
             answer = json.dumps(answer, ensure_ascii=False)
-            correct_answer = json.dumps(testcase["output"], ensure_ascii=False)
+            correct_answer = json.dumps(testcase["result"], ensure_ascii=False)
             logging.add_entry(
                 algorithm_name,
                 answer,
                 correct_answer,
                 answer_status,
                 elapsed_time,
+                testcase["text"],
                 testcase_file_name,
             )
             if elapsed_time > time_limit:

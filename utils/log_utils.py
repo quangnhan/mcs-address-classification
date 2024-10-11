@@ -21,6 +21,7 @@ class LoggingSystemDB:
                     correct_answer TEXT,
                     answer_status TEXT,
                     time_s REAL,
+                    input_address TEXT,
                     testcase_name TEXT,
                     created_at TEXT
                 )
@@ -34,6 +35,7 @@ class LoggingSystemDB:
         correct_answer,
         answer_status,
         time_s,
+        input_address,
         testcase_name,
     ):
         vietnam_time = (datetime.now(timezone.utc) + timedelta(hours=7)).strftime(
@@ -42,8 +44,8 @@ class LoggingSystemDB:
         with self.connection:
             self.connection.execute(
                 """
-                INSERT INTO loggings (algorithm_name, answer, correct_answer, answer_status, time_s, testcase_name, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO loggings (algorithm_name, answer, correct_answer, answer_status, time_s, input_address, testcase_name, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     algorithm_name,
@@ -51,6 +53,7 @@ class LoggingSystemDB:
                     correct_answer,
                     answer_status,
                     time_s,
+                    input_address,
                     testcase_name,
                     vietnam_time,
                 ),
@@ -63,6 +66,7 @@ class LoggingSystemDB:
         correct_answer,
         answer_status,
         time_s,
+        input_address,
         testcase_name,
         create_at,
     ):
@@ -75,6 +79,7 @@ class LoggingSystemDB:
 
         print(f"Algorithm Name: {algorithm_name}")
         print(f"Test Case Name: {testcase_name}")
+        print(f"Input address: {input_address}")
         print(f"Answer Status: {answer_status}")
         print(f"Run Time (s): {time_s:.5f}")
         print(f"Create At: {create_at}")
@@ -82,29 +87,38 @@ class LoggingSystemDB:
         headers = ["Key", "Answer", "Correct Answer"]
         print(tabulate(comparison_data, headers=headers, tablefmt="grid"))
 
-    def display_logs(self, answer_status=""):
+    def display_logs(self, answer_status="", order="ASC", number_of_records=10):
+        # Start with the base query
         query = """
             SELECT algorithm_name,
                 answer,
                 correct_answer,
                 answer_status,
                 time_s,
+                input_address,
                 testcase_name,
                 created_at
             FROM loggings
         """
+
         if answer_status in ["correct", "incorrect"]:
             query += " WHERE LOWER(answer_status) = ?"
-            cursor = self.connection.execute(
-                query + " ORDER BY created_at ASC", (answer_status,)
-            )
-        else:
-            cursor = self.connection.execute(query + " ORDER BY created_at ASC")
+
+        query += f" ORDER BY created_at {order}"
+
+        query += " LIMIT ?"
+
+        params = []
+        if answer_status in ["correct", "incorrect"]:
+            params.append(answer_status)
+        params.append(number_of_records)
+
+        cursor = self.connection.execute(query, tuple(params))
 
         rows = cursor.fetchall()
         for row in rows:
             self.__print_comparison(
-                row[0], row[1], row[2], row[3], row[4], row[5], row[6]
+                row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]
             )
             print("\n" + "-" * 50 + "\n")
 
@@ -113,4 +127,4 @@ if __name__ == "__main__":
     logging_system_db = LoggingSystemDB()
     # logging_system_db.add_entry("Algorithm A", '{"ward":"Tân Chánh Hiệp","district":"12","province":"Hồ Chí Minh"}', '{"ward":"Tân Chánh Hiệp","district":"12","province":"Hồ Chí Minh"}', "Incorrect", 0.1500, "Dataset 1")
     # logging_system_db.add_entry("Algorithm B", '{"ward":"Tân Chánh Hiệp","district":"12","province":"Hồ Chí Minh"}', '{"ward":"Tân Chánh Hiệp","district":"12","province":"Hồ Chí Minh"}', "Incorrect", 0.1200, "Dataset 1")
-    logging_system_db.display_logs(answer_status="correct")
+    logging_system_db.display_logs(answer_status="incorrect")
