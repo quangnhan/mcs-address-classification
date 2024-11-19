@@ -1,0 +1,11 @@
+# Ignore all __pycache__ folders
+__pycache__/
+
+# Ignore all files in logs, results, and testcases folders
+logs/*
+results/*
+testcases/*
+
+!logs/.keep
+!results/.keep
+!testcases/.keep
